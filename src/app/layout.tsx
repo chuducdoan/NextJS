@@ -1,3 +1,5 @@
+import AppFooter from "@/components/footer/app.footer";
+import AppHeader from "@/components/header/app.header";
 import ThemeRegistry from "@/components/theme-registry/theme.registry";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import HomeIcon from "@mui/icons-material/Home";
@@ -12,20 +14,6 @@ export const metadata = {
   description: "Next.js App Router + Material UI v5",
 };
 
-const DRAWER_WIDTH = 240;
-
-const LINKS = [
-  { text: "Home", href: "/", icon: HomeIcon },
-  { text: "Starred", href: "/starred", icon: StarIcon },
-  { text: "Tasks", href: "/tasks", icon: ChecklistIcon },
-];
-
-const PLACEHOLDER_LINKS = [
-  { text: "Settings", icon: SettingsIcon },
-  { text: "Support", icon: SupportIcon },
-  { text: "Logout", icon: LogoutIcon },
-];
-
 export default function RootLayout({
   children,
 }: {
@@ -34,7 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          <AppHeader />
+          {children}
+          <AppFooter />
+        </ThemeRegistry>
       </body>
     </html>
   );

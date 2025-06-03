@@ -1,3 +1,5 @@
 link tài liệu: https://docs.google.com/document/d/1f6M42s-v0W9x_iTecjJ6sTKmlkLWQ2gvfNFlRioJGDI/edit?tab=t.0
 - Tài liệu và project hiện giờ là NextJS 13
 - Khai báo route trong thư mục /app, tạo folder VD: /home/page.tsx
+- NextJS tốn ram trong lần đầu tiên, từ lần t2 trở đi nó catching rồi 
+- sx chỉ dùng đc đối vs các phần tử của MUI, còn với NextJS muốn style thì dùng prop style
