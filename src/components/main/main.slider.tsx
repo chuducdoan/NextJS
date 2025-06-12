@@ -5,16 +5,24 @@ import Slider from "react-slick";
 import { Settings } from "react-slick";
 import { Box, Button, Divider } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import Link from "next/link";
 
-const MainSlider = () => {
+interface IProps {
+  data: ITrack[];
+  title: string;
+}
+
+const MainSlider = (props: IProps) => {
+  const { data, title } = props;
   const NextArrow = (props: any) => {
     return (
       <Button
-        variant="outlined"
+        color="inherit"
+        variant="contained"
         onClick={props.onClick}
         sx={{
           position: "absolute",
-          top: "50%",
+          top: "25%",
           right: "0",
           zIndex: "2",
           minWidth: 30,
@@ -28,11 +36,12 @@ const MainSlider = () => {
   const PrevArrow = (props: any) => {
     return (
       <Button
-        variant="outlined"
+        color="inherit"
+        variant="contained"
         onClick={props.onClick}
         sx={{
           position: "absolute",
-          top: "50%",
+          top: "25%",
           left: "0",
           zIndex: "2",
           minWidth: 30,
@@ -57,8 +66,16 @@ const MainSlider = () => {
       <Box
         sx={{
           margin: "0 50px",
-          ".abc": {
+          ".track": {
             padding: "0 10px",
+            display: "flex",
+            justifyItems: "center",
+
+            img: {
+              height: 150,
+              width: 150,
+              objectFit: "cover",
+            },
           },
           h3: {
             border: "1px solid #ccc",
@@ -67,98 +84,19 @@ const MainSlider = () => {
           },
         }}
       >
-        <h2>Multiple tracks</h2>
+        <h2>{title}</h2>
         <Slider {...settings}>
-          <div className="abc">
-            <h3>1</h3>
-          </div>
-          <div className="abc">
-            <h3>2</h3>
-          </div>
-          <div className="abc">
-            <h3>3</h3>
-          </div>
-          <div className="abc">
-            <h3>4</h3>
-          </div>
-          <div className="abc">
-            <h3>5</h3>
-          </div>
-          <div className="abc">
-            <h3>6</h3>
-          </div>
-        </Slider>
-        <Divider />
-      </Box>
-      <Box
-        sx={{
-          margin: "0 50px",
-          ".abc": {
-            padding: "0 10px",
-          },
-          h3: {
-            border: "1px solid #ccc",
-            padding: "20px",
-            height: "200px",
-          },
-        }}
-      >
-        <h2>Multiple tracks</h2>
-        <Slider {...settings}>
-          <div className="abc">
-            <h3>1</h3>
-          </div>
-          <div className="abc">
-            <h3>2</h3>
-          </div>
-          <div className="abc">
-            <h3>3</h3>
-          </div>
-          <div className="abc">
-            <h3>4</h3>
-          </div>
-          <div className="abc">
-            <h3>5</h3>
-          </div>
-          <div className="abc">
-            <h3>6</h3>
-          </div>
-        </Slider>
-        <Divider />
-      </Box>
-      <Box
-        sx={{
-          margin: "0 50px",
-          ".abc": {
-            padding: "0 10px",
-          },
-          h3: {
-            border: "1px solid #ccc",
-            padding: "20px",
-            height: "200px",
-          },
-        }}
-      >
-        <h2>Multiple tracks</h2>
-        <Slider {...settings}>
-          <div className="abc">
-            <h3>1</h3>
-          </div>
-          <div className="abc">
-            <h3>2</h3>
-          </div>
-          <div className="abc">
-            <h3>3</h3>
-          </div>
-          <div className="abc">
-            <h3>4</h3>
-          </div>
-          <div className="abc">
-            <h3>5</h3>
-          </div>
-          <div className="abc">
-            <h3>6</h3>
-          </div>
+          {data.map((track) => (
+            <div className="track" key={track._id}>
+              <div>
+                <img src={track.imgUrl} />
+                <Link href={`/track/${track._id}?audio=${track.trackUrl}`}>
+                  <h4>{track.title}</h4>
+                </Link>
+                <h5>{track.description}</h5>
+              </div>
+            </div>
+          ))}
         </Slider>
         <Divider />
       </Box>

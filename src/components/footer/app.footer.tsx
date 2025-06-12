@@ -9,8 +9,6 @@ const AppFooter = () => {
 
   if (!hasMounted) return <></>;
 
-  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
-
   return (
     <AppBar
       position="fixed"
@@ -19,7 +17,7 @@ const AppFooter = () => {
     >
       <Container sx={{ display: "flex", gap: 10 }}>
         <AudioPlayer
-          autoPlay={true}
+          // autoPlay={true}
           src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
           onPlay={(e) => console.log("onPlay")}
           volume={0.5}
