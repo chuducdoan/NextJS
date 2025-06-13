@@ -28,7 +28,7 @@ declare global {
   interface IBackendRes<T> {
     error?: string | string[];
     message: string;
-    statusCode: number | string;
+    code: number | string;
     data?: T;
   }
 
@@ -48,5 +48,11 @@ declare global {
     title: string;
     description: string;
     trackUrl: string;
+  }
+
+  interface IAuthUser {
+    access_token: string;
+    refresh_token: string;
+    fullName: string;
   }
 }

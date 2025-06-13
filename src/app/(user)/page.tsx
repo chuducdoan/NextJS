@@ -1,25 +1,29 @@
 import MainSlider from "@/components/main/main.slider";
 import { sendRequest } from "@/utils/api";
 import { Container } from "@mui/material";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function HomePage() {
-  const res = await sendRequest<IMessage>({
-    url: "https://smsgw.vnpaytest.vn/smsgw/sendSms",
-    method: "POST",
-    body: {
-      messageId: "87308x01256",
-      destination: "0328118909",
-      sender: "doancdtest",
-      keyword: "doancd_test",
-      shortMessage: "Dich vu he sinh thai",
-      encryptMessage: "",
-      isEncrypt: "0",
-      type: "0",
-      requestTime: "1590032785",
-      partnerCode: "953012",
-      secretKey: "9a270b8435d84d9dbba5b2890c3cd83f",
-    },
-  });
+  const session = await getServerSession(authOptions);
+  console.log(">> check session: ", session);
+  // const res = await sendRequest<IMessage>({
+  //   url: "https://smsgw.vnpaytest.vn/smsgw/sendSms",
+  //   method: "POST",
+  //   body: {
+  //     messageId: "87308x01256",
+  //     destination: "0328118909",
+  //     sender: "doancdtest",
+  //     keyword: "doancd_test",
+  //     shortMessage: "Dich vu he sinh thai",
+  //     encryptMessage: "",
+  //     isEncrypt: "0",
+  //     type: "0",
+  //     requestTime: "1590032785",
+  //     partnerCode: "953012",
+  //     secretKey: "9a270b8435d84d9dbba5b2890c3cd83f",
+  //   },
+  // });
 
   const data: ITrack[] = [
     {

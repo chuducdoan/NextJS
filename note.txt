@@ -5,4 +5,7 @@ link tài liệu: https://docs.google.com/document/d/1f6M42s-v0W9x_iTecjJ6sTKmlk
 - sx chỉ dùng đc đối vs các phần tử của MUI, còn với NextJS muốn style thì dùng prop style
 
 2. Next Auth
-- 
+- để thao tác đc với session thì phải viết logic trong client component tức component có tag 'use client'
+- để thao tác với session server component thì dùng getServerSession(authOptions)
+- mỗi 1 lần login thành công, token này sẽ lưu ở cookie tại phía browser, mỗi lần refresh lại trang nó sẽ gọi phần token và gửi lên server, server giải mã và nạp vào session
+- redirect dùng ở phía server, ở phía client dùng Link và useRouter

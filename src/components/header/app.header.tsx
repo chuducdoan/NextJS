@@ -20,6 +20,7 @@ import Container from "@mui/material/Container";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 // styled component
 const Search = styled("div")(({ theme }) => ({
@@ -66,10 +67,10 @@ export default function AppHeader() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -113,7 +114,14 @@ export default function AppHeader() {
           Profile
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          signOut();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -205,20 +213,26 @@ export default function AppHeader() {
                 },
               }}
             >
-              <Link href={"/playlist"}>Playlist</Link>
-              <Link href={"/like"}>Likes</Link>
-              <Link href={"/"}>Upload</Link>
-              <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <Avatar>CD</Avatar>
-              </IconButton>
+              {session ? (
+                <>
+                  <Link href={"/playlist"}>Playlist</Link>
+                  <Link href={"/like"}>Likes</Link>
+                  <Link href={"/"}>Upload</Link>
+                  <IconButton
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                  >
+                    <Avatar>CD</Avatar>
+                  </IconButton>
+                </>
+              ) : (
+                <Link href={"auth/signin"}>Login</Link>
+              )}
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
