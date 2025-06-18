@@ -15,6 +15,15 @@ declare global {
     secretKey: string;
   }
 
+  interface ITrackProps {
+    id: number;
+    title: string;
+    description: string;
+    imgUrl: string;
+    trackUrl: string;
+    category: string;
+  }
+
   interface IRequest {
     url: string;
     method: string;
@@ -55,4 +64,6 @@ declare global {
     refresh_token: string;
     fullName: string;
   }
+
+  interface ITrackTop {}
 }

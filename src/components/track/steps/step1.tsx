@@ -1,9 +1,18 @@
 "use client";
+import { sendRequestFile } from "@/utils/api";
+import { CloudUpload } from "@mui/icons-material";
+import { Button, styled } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import "./theme.css";
-import { Button, styled } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
-import { useCallback } from "react";
+import axios from "axios";
+
+interface IProps {
+  setValue: (v: number) => void;
+  setTrackUpload: (v: any) => void;
+  trackUpload: any;
+}
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -37,13 +46,57 @@ function InputFileUpload() {
   );
 }
 
-const Step1 = () => {
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    console.log(acceptedFiles);
-  }, []);
+const Step1 = (props: IProps) => {
+  const { data: session } = useSession();
+  const { trackUpload } = props;
+
+  const onDrop = useCallback(
+    async (acceptedFiles: FileWithPath[]) => {
+      if (acceptedFiles && acceptedFiles[0]) {
+        props.setValue(1);
+        const audio = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append("file", audio);
+
+        try {
+          const res = await axios.post(
+            "http://localhost:8080/api/v1/files/upload",
+            formData,
+            {
+              headers: {
+                ["Authorization"]: `Bearer ${session?.access_token}`,
+              },
+              onUploadProgress: (progressEvent) => {
+                let percentCompleted = Math.floor(
+                  //@ts-ignore
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+                props.setTrackUpload({
+                  ...trackUpload,
+                  fileName: acceptedFiles[0].name,
+                  percent: percentCompleted,
+                });
+              },
+            }
+          );
+          props.setTrackUpload((prevState: any) => ({
+            ...prevState,
+            uploadedTrackName: res.data.data.fileName,
+          }));
+        } catch (error) {
+          // @ts-ignore
+          alert(error?.response?.data?.message);
+        }
+      }
+    },
+    [session]
+  );
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     onDrop,
+    accept: {
+      "audio/mpeg": [".mp3", ".m4a", ".wav"],
+    },
   });
 
   const files = acceptedFiles.map((file: FileWithPath) => (

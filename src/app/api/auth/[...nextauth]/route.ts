@@ -79,7 +79,6 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      console.log("session check token: ", token);
       if (token) {
         session.access_token = token.access_token;
         session.refresh_token = token.refresh_token;

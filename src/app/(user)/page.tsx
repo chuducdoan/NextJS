@@ -6,7 +6,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
-  console.log(">> check session: ", session);
   // const res = await sendRequest<IMessage>({
   //   url: "https://smsgw.vnpaytest.vn/smsgw/sendSms",
   //   method: "POST",

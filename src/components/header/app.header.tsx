@@ -108,7 +108,7 @@ export default function AppHeader() {
     >
       <MenuItem onClick={handleMenuClose}>
         <Link
-          href={"/profile"}
+          href={`/profile/${session?.user._id}`}
           style={{ color: "unset", textDecoration: "unset" }}
         >
           Profile
@@ -217,7 +217,7 @@ export default function AppHeader() {
                 <>
                   <Link href={"/playlist"}>Playlist</Link>
                   <Link href={"/like"}>Likes</Link>
-                  <Link href={"/"}>Upload</Link>
+                  <Link href={"/track/upload"}>Upload</Link>
                   <IconButton
                     size="large"
                     edge="end"
@@ -231,7 +231,7 @@ export default function AppHeader() {
                   </IconButton>
                 </>
               ) : (
-                <Link href={"auth/signin"}>Login</Link>
+                <Link href={"/auth/signin"}>Login</Link>
               )}
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
