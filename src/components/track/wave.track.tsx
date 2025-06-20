@@ -1,11 +1,16 @@
 "use client";
+import { useTrackContext } from "@/lib/track.wrapper";
 import { useWavesufer } from "@/utils/customHook";
 import { Pause, PlayArrow } from "@mui/icons-material";
-import { useSearchParams } from "next/navigation";
+import { Tooltip } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { WaveSurferOptions } from "wavesurfer.js";
 import "./wave.scss";
-import { Tooltip } from "@mui/material";
+import CommentTrack from "./comment.track";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import LikeTrack from "./like.track";
 
 const formatTime = (seconds: any) => {
   const minutes = Math.floor(seconds / 60);
@@ -14,41 +19,25 @@ const formatTime = (seconds: any) => {
   return `${minutes}:${paddedSeconds}`;
 };
 
-const arrComments = [
-  {
-    id: 1,
-    avatar:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg",
-    moment: 10,
-    user: "username 1",
-    content: "just a comment1",
-  },
-  {
-    id: 2,
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlrZqTCInyg6RfYC7Ape20o-EWP1EN_A8fOA&s",
-    moment: 30,
-    user: "username 2",
-    content: "just a comment3",
-  },
-  {
-    id: 3,
-    avatar:
-      "https://img.freepik.com/free-photo/pretty-girl-holding-flowers-by-lake_23-2148224688.jpg?semt=ais_hybrid&w=740",
-    moment: 50,
-    user: "username 3",
-    content: "just a comment3",
-  },
-];
 
-const WaveTrack = () => {
+interface IProps {
+  trackInfo: ITrackProps | null;
+  comments: ITrackCommentProps[] | null
+}
+
+const WaveTrack = (props: IProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const audio = searchParams.get("audio");
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [time, setTime] = useState<string>("0:00");
   const [duration, setDuration] = useState<string>("0:00");
+  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  const {trackInfo, comments} = props;
+  const [isPlaying, setIsPlaying] = useState(false);
+  const router = useRouter();
+  const firstViewRef = useRef(true);
+  const {data: session} = useSession();
 
   const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
     let gradient, progressGradient;
@@ -105,8 +94,7 @@ const WaveTrack = () => {
     return {
       waveColor: gradient,
       progressColor: progressGradient,
-      url: "/audio/" + audio,
-      barWidth: 3,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${audio}`,
       height: 100,
     };
   }, []);
@@ -150,11 +138,42 @@ const WaveTrack = () => {
     };
   }, [wavesufer]);
 
+  useEffect(() => {
+    if ( wavesufer && currentTrack.isPlaying) {
+      wavesufer.pause();
+    }
+  }, [currentTrack])
+
+  useEffect(() => {
+    if ( trackInfo?.id && !currentTrack.id) {
+      setCurrentTrack({...trackInfo, isPlaying: false})
+    }
+  }, [trackInfo])
+
   const calcLeft = (moment: number) => {
-    const hardCodeDuration = 200;
+    const hardCodeDuration = wavesufer?.getDuration() ?? 0;
     const percent = (moment / hardCodeDuration) * 100;
     return percent + "%";
   };
+
+  const handleIncreaseTrack = async () => {
+    if (firstViewRef.current === true) {
+      const res = await sendRequest<IBackendRes<ITrackCommentProps[]>>({
+          url: `http://localhost:8080/api/v1/tracks/increase-view`,
+          method: "POST",
+          body: {
+            "trackId": trackInfo?.id,
+          },
+          headers: {
+            ["Authorization"]: `Bearer ${session?.access_token}`,
+          },
+      });
+      if (res.code === "00") {
+        router.refresh();
+        firstViewRef.current = false;
+      }
+    }
+  }
 
   return (
     <div style={{ marginTop: 20 }}>
@@ -180,7 +199,13 @@ const WaveTrack = () => {
           <div className="info" style={{ display: "flex", gap: "24px" }}>
             <div>
               <div
-                onClick={() => onPlayClick()}
+                onClick={() => {
+                  onPlayClick();
+                  handleIncreaseTrack();
+                  if(trackInfo  && wavesufer) {
+                    setCurrentTrack({...currentTrack, isPlaying: false})
+                  }
+                }}
                 style={{
                   borderRadius: "50%",
                   background: "#f50",
@@ -201,8 +226,8 @@ const WaveTrack = () => {
             </div>
 
             <div>
-              <h1 style={{ margin: 0, color: "#fff" }}>Hoi Dan IT song</h1>
-              <h3 style={{ marginTop: 16, color: "#fff" }}>Doancd</h3>
+              <h1 style={{ margin: 0, color: "#fff" }}>{trackInfo?.title}</h1>
+              <h3 style={{ marginTop: 16, color: "#fff" }}>{trackInfo?.description}</h3>
             </div>
           </div>
           <div ref={containerRef} className="wave-form-container">
@@ -218,13 +243,15 @@ const WaveTrack = () => {
                 bottom: 0,
                 backdropFilter: "brightness(0.5)",
               }}
-            ></div>
+            >
+              
+            </div>
 
             <div className="comments" style={{ position: "relative" }}>
-              {arrComments.map((item) => (
-                <Tooltip title={item.content} arrow>
+              {comments?.map((item, index) => (
+                <Tooltip title={item.content} arrow key={index}>
                   <img
-                    src={item.avatar}
+                    src={fetchDefaultImages(item.type)}
                     alt=""
                     style={{
                       height: 20,
@@ -251,7 +278,17 @@ const WaveTrack = () => {
             height: 250,
             flexGrow: 1,
           }}
-        ></div>
+        >
+          <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${trackInfo?.imgUrl}`}/>
+        </div>
+      </div>
+
+      <div>
+        <LikeTrack track={trackInfo} />
+      </div>
+
+      <div>
+        <CommentTrack track={trackInfo} comments={props.comments} wavesufer={wavesufer}/>
       </div>
     </div>
   );

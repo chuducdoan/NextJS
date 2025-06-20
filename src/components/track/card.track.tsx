@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "@mui/material/styles";
-import { PlayArrow, SkipNext, SkipPrevious } from "@mui/icons-material";
+import { Pause, PlayArrow, SkipNext, SkipPrevious } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -10,6 +10,8 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
+import { useTrackContext } from "@/lib/track.wrapper";
+import Link from "next/link";
 
 interface IProps {
   data: ITrackProps;
@@ -18,14 +20,18 @@ interface IProps {
 const CardTrack = (props: IProps) => {
   const theme = useTheme<Theme>();
   const { data } = props;
+  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
   return (
     <Card sx={{ display: "flex" }}>
       <Box sx={{ display: "flex", flexDirection: "column", width: "70%" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
+          <Link href={`/track/${data.id}?audio=${data.trackUrl}&id=${data.id}`}>
+          
           <Typography component="div" variant="h5">
             {data.title}
           </Typography>
+          </Link>
           <Typography
             variant="subtitle1"
             color="text.secondary"
@@ -39,7 +45,21 @@ const CardTrack = (props: IProps) => {
             {theme.direction === "rtl" ? <SkipNext /> : <SkipPrevious />}
           </IconButton>
           <IconButton aria-label="play/pause">
-            <PlayArrow sx={{ height: 38, width: 38 }} />
+            {(currentTrack.id === data.id &&
+              currentTrack.isPlaying === false ||
+              currentTrack.id !== data.id) && (
+                <PlayArrow
+                  sx={{ height: 38, width: 38 }}
+                  onClick={() => setCurrentTrack({ ...data, isPlaying: true })}
+                />
+              )}
+
+            {currentTrack.id === data.id && currentTrack.isPlaying === true && (
+              <Pause
+                sx={{ height: 38, width: 38 }}
+                onClick={() => setCurrentTrack({ ...data, isPlaying: false })}
+              />
+            )}
           </IconButton>
           <IconButton aria-label="next">
             {theme.direction === "rtl" ? <SkipPrevious /> : <SkipNext />}

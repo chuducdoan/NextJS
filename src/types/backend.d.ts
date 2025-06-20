@@ -22,6 +22,8 @@ declare global {
     imgUrl: string;
     trackUrl: string;
     category: string;
+    countLike: number;
+    countPlay: number;
   }
 
   interface IRequest {
@@ -66,4 +68,27 @@ declare global {
   }
 
   interface ITrackTop {}
+
+  interface IShareTrack extends ITrackProps {
+    isPlaying: boolean;
+  }
+
+  interface ITrackContext {
+    isPlaying: boolean;
+    setIsPlaying: (v: boolean) => void;
+    currentTrack: IShareTrack;
+    setCurrentTrack: (v: IShareTrack) => void;
+  }
+
+  interface ITrackCommentProps {
+    id: number;
+    content: string;
+    userName: string;
+    userId: number;
+    moment: number;
+    createdAt: string;
+    type:string
+  }
+
+  interface ITrackLike {}
 }

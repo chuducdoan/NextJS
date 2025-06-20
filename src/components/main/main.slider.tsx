@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Link from "next/link";
 
 interface IProps {
-  data: ITrack[];
+  data: ITrackProps[];
   title: string;
 }
 
@@ -87,10 +87,12 @@ const MainSlider = (props: IProps) => {
         <h2>{title}</h2>
         <Slider {...settings}>
           {data.map((track) => (
-            <div className="track" key={track._id}>
+            <div className="track" key={track.id}>
               <div>
-                <img src={track.imgUrl} />
-                <Link href={`/track/${track._id}?audio=${track.trackUrl}`}>
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${track.imgUrl}`}
+                />
+                <Link href={`/track/${track.id}?audio=${track.trackUrl}&id=${track.id}`}>
                   <h4>{track.title}</h4>
                 </Link>
                 <h5>{track.description}</h5>

@@ -3,7 +3,6 @@ import CardTrack from "@/components/track/card.track";
 import { sendRequest } from "@/utils/api";
 import { Box, Container, Grid } from "@mui/material";
 import { getServerSession } from "next-auth";
-import { getSession } from "next-auth/react";
 
 const ProfilePage = async ({ params }: { params: { slug: string } }) => {
   const session = await getServerSession(authOptions);
