@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useTrackContext } from "@/lib/track.wrapper";
 import Link from "next/link";
+import { convertSlugUrl } from "@/utils/api";
 
 interface IProps {
   data: ITrackProps;
@@ -26,7 +27,7 @@ const CardTrack = (props: IProps) => {
     <Card sx={{ display: "flex" }}>
       <Box sx={{ display: "flex", flexDirection: "column", width: "70%" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Link href={`/track/${data.id}?audio=${data.trackUrl}&id=${data.id}`}>
+          <Link href={`/track/${convertSlugUrl(data.title)}-${data.id}.html?audio=${data.trackUrl}`}>
           
           <Typography component="div" variant="h5">
             {data.title}

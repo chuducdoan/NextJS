@@ -6,6 +6,7 @@ import { Settings } from "react-slick";
 import { Box, Button, Divider } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Link from "next/link";
+import { convertSlugUrl } from "@/utils/api";
 
 interface IProps {
   data: ITrackProps[];
@@ -61,6 +62,7 @@ const MainSlider = (props: IProps) => {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
   };
+
   return (
     <>
       <Box
@@ -92,7 +94,7 @@ const MainSlider = (props: IProps) => {
                 <img
                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${track.imgUrl}`}
                 />
-                <Link href={`/track/${track.id}?audio=${track.trackUrl}&id=${track.id}`}>
+                <Link href={`/track/${convertSlugUrl(track.title)}-${track.id}.html?audio=${track.trackUrl}`}>
                   <h4>{track.title}</h4>
                 </Link>
                 <h5>{track.description}</h5>

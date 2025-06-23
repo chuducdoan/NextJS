@@ -5,6 +5,8 @@ import { ToastProvider } from "@/utils/toast";
 import * as React from "react";
 import '@/styles/app.css';
 import { Metadata } from "next";
+import Image from "next/image";
+import ImageTest from '../../public/demo.jpg';
 
 export const metadata: Metadata = {
   title: 'Tieu de from layout',
