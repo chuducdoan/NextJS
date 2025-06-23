@@ -7,6 +7,7 @@ import { Box, Button, Divider } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Link from "next/link";
 import { convertSlugUrl } from "@/utils/api";
+import Image from "next/image";
 
 interface IProps {
   data: ITrackProps[];
@@ -61,6 +62,33 @@ const MainSlider = (props: IProps) => {
     dots: false,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+
   };
 
   return (
@@ -89,16 +117,14 @@ const MainSlider = (props: IProps) => {
         <h2>{title}</h2>
         <Slider {...settings}>
           {data.map((track) => (
-            <div className="track" key={track.id}>
-              <div>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${track.imgUrl}`}
-                />
-                <Link href={`/track/${convertSlugUrl(track.title)}-${track.id}.html?audio=${track.trackUrl}`}>
+            <div className="track" key={track.id} >
+              <div style={{position: 'relative', width: '150px', height: '150px'}}>
+                <Image  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${track.imgUrl}`} alt={track.title} fill style={{objectFit: 'contain'}}/>
+              </div>
+               <Link href={`/track/${convertSlugUrl(track.title)}-${track.id}.html?audio=${track.trackUrl}`}>
                   <h4>{track.title}</h4>
                 </Link>
                 <h5>{track.description}</h5>
-              </div>
             </div>
           ))}
         </Slider>

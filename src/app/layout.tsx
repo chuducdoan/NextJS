@@ -7,6 +7,7 @@ import '@/styles/app.css';
 import { Metadata } from "next";
 import Image from "next/image";
 import ImageTest from '../../public/demo.jpg';
+import NProgressWrapper from "@/lib/nprogress.wrapper";
 
 export const metadata: Metadata = {
   title: 'Tieu de from layout',
@@ -22,11 +23,13 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ThemeRegistry>
-          <NextAuthWrapper>
-            <ToastProvider>
-              <TrackContextProvider>{children}</TrackContextProvider>
-            </ToastProvider>
-          </NextAuthWrapper>
+          <NProgressWrapper>
+            <NextAuthWrapper>
+              <ToastProvider>
+                <TrackContextProvider>{children}</TrackContextProvider>
+              </ToastProvider>
+            </NextAuthWrapper>
+          </NProgressWrapper>
         </ThemeRegistry>
       </body>
     </html>

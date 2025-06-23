@@ -4,8 +4,8 @@ import { getIdFromSlug, sendRequest } from "@/utils/api";
 import { Container } from "@mui/material";
 import { getServerSession } from "next-auth";
 
-import type { Metadata, ResolvingMetadata } from 'next'
-import slugify from "slugify";
+import type { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from "next/navigation";
  
 type Props = {
   params: Promise<{ slug: string }>
@@ -21,7 +21,7 @@ export async function generateMetadata(
  
   // fetch post information
   const res = await sendRequest<IBackendRes<ITrackProps>>({
-    url: `http://localhost:8080/api/v1/tracks/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
     nextOption: {caches: 'no-store'}
   });
@@ -44,13 +44,13 @@ const DetailTrackPage = async (props: any) => {
   const session = await getServerSession(authOptions);
 
   const res = await sendRequest<IBackendRes<ITrackProps>>({
-    url: `http://localhost:8080/api/v1/tracks/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
     nextOption: {caches: 'no-store'},
   });
 
   const resComment = await sendRequest<IBackendRes<ITrackCommentProps[]>>({
-    url: `http://localhost:8080/api/v1/tracks/comment`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comment`,
     method: "POST",
     body: {
       "trackId": id,
@@ -61,6 +61,12 @@ const DetailTrackPage = async (props: any) => {
       ["Authorization"]: `Bearer ${session?.access_token}`,
     },
   });
+
+  await new Promise(resolve => setTimeout(resolve, 3000))
+
+  if (!resComment?.data) {
+    notFound();
+  }
 
   return (
     <Container>

@@ -26,7 +26,7 @@ const AppFooter = () => {
 
   return (
     <>
-      { currentTrack?.id && (
+      { !!currentTrack?.id && (
           <div style={{ marginTop: 50 }}>
             <AppBar
               position="fixed"

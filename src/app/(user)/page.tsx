@@ -8,7 +8,7 @@ const HomePage = async () => {
   const session = await getServerSession(authOptions);
 
   const res = await sendRequest<IBackendRes<ITrackProps[]>>({
-    url: "http://localhost:8080/api/v1/tracks",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
     method: "GET",
     headers: {
       ["Authorization"]: `Bearer ${session?.access_token}`,

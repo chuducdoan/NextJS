@@ -14,7 +14,7 @@ export default function RootLayout({
       {children}
       <div style={{marginBottom: '100px'}}></div>
       <AppFooter />
-       <Script src="https://example.com/script.js" />
+      {/* <Script src="https://example.com/script.js" /> */}
     </>
   );
 }

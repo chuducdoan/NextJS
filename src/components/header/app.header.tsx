@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { fetchDefaultImages } from "@/utils/api";
+import Image from "next/image";
 
 // styled component
 const Search = styled("div")(({ theme }) => ({
@@ -219,18 +220,8 @@ export default function AppHeader() {
                   <Link href={"/playlist"}>Playlist</Link>
                   <Link href={"/like"}>Likes</Link>
                   <Link href={"/track/upload"}>Upload</Link>
-                  {/* <IconButton
-                    size="large"
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
-                    color="inherit"
-                  >
-                    <Avatar>CD</Avatar>
-                  </IconButton> */}
-                  <img style={{height: 35, width: 35, cursor: "pointer"}} onClick={handleProfileMenuOpen} src={fetchDefaultImages(session.user.type)}/>
+
+                  <Image onClick={handleProfileMenuOpen} src={fetchDefaultImages(session.user.type)} width={35} height={35} alt="avatar"/>
                 </>
               ) : (
                 <Link href={"/auth/signin"}>Login</Link>

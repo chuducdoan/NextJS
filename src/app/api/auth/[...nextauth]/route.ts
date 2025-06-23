@@ -6,7 +6,7 @@ import { sendRequest } from "@/utils/api";
 import { JWT } from "next-auth/jwt";
 
 export const authOptions: AuthOptions = {
-  secret: process.env.NO_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -22,7 +22,7 @@ export const authOptions: AuthOptions = {
       async authorize(credentials: any, req: any) {
         // Add logic here to look up the user from the credentials supplied
         const res = await sendRequest<IBackendRes<JWT>>({
-          url: "http://localhost:8080/api/v1/auth/login",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
           method: "POST",
           body: {
             username: credentials.username,
@@ -52,7 +52,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user, account, profile, trigger }) {
       if (trigger === "signIn" && account?.provider !== "credentials") {
         const res = await sendRequest<IBackendRes<JWT>>({
-          url: "http://localhost:8080/api/v1/auth/login",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
           method: "POST",
           body: {
             username: user.email,

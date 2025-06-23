@@ -8,7 +8,7 @@ const ProfilePage = async ({ params }: { params: { slug: string } }) => {
   const session = await getServerSession(authOptions);
 
   const res = await sendRequest<IBackendRes<ITrackProps[]>>({
-    url: "http://localhost:8080/api/v1/tracks/user",
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/user`,
     method: "POST",
     body: {
       id: params.slug,

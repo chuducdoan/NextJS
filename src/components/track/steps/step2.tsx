@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
 import { JWT } from "next-auth/jwt";
 import { useToast } from "@/utils/toast";
+import Image from "next/image";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -63,7 +64,7 @@ function InputFileUpload(props: any) {
       const formData = new FormData();
       formData.append("file", image);
       const res = await axios.post(
-        "http://localhost:8080/api/v1/files/upload",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload`,
         formData,
         {
           headers: {
@@ -134,7 +135,7 @@ const Step2 = (props: IProps) => {
 
   const handleSubmitForm = async () => {
     const res = await sendRequest<IBackendRes<JWT>>({
-      url: "http://localhost:8080/api/v1/tracks",
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
       method: "POST",
       body: info,
       headers: {
@@ -168,14 +169,7 @@ const Step2 = (props: IProps) => {
           >
             <div style={{ height: 250, width: 250, background: "#ccc" }}>
               {info.imgUrl && (
-                <img
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${info.imgUrl}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
+                <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${info.imgUrl}`} alt="image upload" width={250} height={250} />
               )}
             </div>
             <InputFileUpload setInfo={setInfo} info={info} />

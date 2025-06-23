@@ -11,6 +11,7 @@ import "./wave.scss";
 import CommentTrack from "./comment.track";
 import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import LikeTrack from "./like.track";
+import Image from "next/image";
 
 const formatTime = (seconds: any) => {
   const minutes = Math.floor(seconds / 60);
@@ -159,7 +160,7 @@ const WaveTrack = (props: IProps) => {
   const handleIncreaseTrack = async () => {
     if (firstViewRef.current === true) {
       const res = await sendRequest<IBackendRes<ITrackCommentProps[]>>({
-          url: `http://localhost:8080/api/v1/tracks/increase-view`,
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
           method: "POST",
           body: {
             "trackId": trackInfo?.id,
@@ -250,23 +251,17 @@ const WaveTrack = (props: IProps) => {
             <div className="comments" style={{ position: "relative" }}>
               {comments?.map((item, index) => (
                 <Tooltip title={item.content} arrow key={index}>
-                  <img
-                    src={fetchDefaultImages(item.type)}
-                    alt=""
+                  <Image src={fetchDefaultImages(item.type)} width={20} height={20} alt="tract" key={item.id}
+                    onPointerMove={(e) => {
+                      const hover = hoverRef.current!;
+                      hover.style.width = calcLeft(item.moment + 3);
+                    }}  
                     style={{
-                      height: 20,
-                      width: 20,
                       position: "absolute",
                       top: 71,
                       zIndex: 20,
                       left: calcLeft(item.moment),
-                    }}
-                    key={item.id}
-                    onPointerMove={(e) => {
-                      const hover = hoverRef.current!;
-                      hover.style.width = calcLeft(item.moment + 3);
-                    }}
-                  />
+                    }}/>
                 </Tooltip>
               ))}
             </div>
@@ -274,12 +269,11 @@ const WaveTrack = (props: IProps) => {
         </div>
         <div
           style={{
-            background: "gray",
             height: 250,
             flexGrow: 1,
           }}
         >
-          <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${trackInfo?.imgUrl}`}/>
+           <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/${trackInfo?.imgUrl}`} width={250} height={250} alt="tract" />
         </div>
       </div>
 

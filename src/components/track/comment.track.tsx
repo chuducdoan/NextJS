@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import WaveSurfer from "wavesurfer.js";
 import { useHasMounted } from "@/utils/customHook";
+import Image from "next/image";
 dayjs.extend(relativeTime)
 
 interface IProps {
@@ -35,7 +36,7 @@ const CommentTrack = (props: IProps) => {
 
     const handleSubmit = async () =>{
         const resComment = await sendRequest<IBackendRes<null>>({
-            url: `http://localhost:8080/api/v1/comments`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/comments`,
             method: "POST",
             body: {
                 "trackId": track?.id,
@@ -74,7 +75,7 @@ const CommentTrack = (props: IProps) => {
             <Grid container spacing={2}>
                 <Grid item xs={3} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                     <div>
-                        <img src={fetchDefaultImages(session?.user.type ?? "")} style={{width: '150px'}}/>
+                        <Image src={fetchDefaultImages(session?.user.type ?? "")} width={150} height={150} alt="avatar comment"/>
                     </div>
                      <Typography>
                         {session?.user.email}
@@ -84,7 +85,7 @@ const CommentTrack = (props: IProps) => {
                     {comments?.map((cmt: ITrackCommentProps, index: number) => (
                         <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}} key={index}>
                                 <Box sx={{display: 'flex', gap: '8px'}}>
-                                    <img src={fetchDefaultImages(cmt.type ?? "")} style={{width: '40px', height: '40px', objectFit: 'contain'}}/>
+                                    <Image src={fetchDefaultImages(cmt.type ?? "")} width={40} height={40} alt="comment"/>
                                     <Box>
                                         <div className="comment-user" style={{fontSize: '13px'}}>{cmt.userName}  <span style={{cursor: 'pointer'}} onClick={() => handleJumpTrack(cmt.moment)}>{formatTime(cmt.moment)}</span></div>
                                         <div className="comment-desc" style={{fontSize: '14px'}}>{cmt.content}</div>

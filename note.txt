@@ -10,3 +10,6 @@ link tài liệu: https://docs.google.com/document/d/1f6M42s-v0W9x_iTecjJ6sTKmlk
 - để thao tác với session server component thì dùng getServerSession(authOptions)
 - mỗi 1 lần login thành công, token này sẽ lưu ở cookie tại phía browser, mỗi lần refresh lại trang nó sẽ gọi phần token và gửi lên server, server giải mã và nạp vào session
 - redirect dùng ở phía server, ở phía client dùng Link và useRouter
+
+3. Tối ưu image
+- Khi load image từ server trả về qua api mà ta sử dụng image của next thì ta phải cấu hình trong file next.config.js
