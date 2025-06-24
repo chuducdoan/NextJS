@@ -23,7 +23,7 @@ export async function generateMetadata(
   const res = await sendRequest<IBackendRes<ITrackProps>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    nextOption: {caches: 'no-store'}
+    // nextOption: {caches: 'no-store'}
   });
  
   return {
@@ -38,6 +38,13 @@ export async function generateMetadata(
   }
 }
 
+export async function generateStaticParams() {
+  return [
+    {slug: "run-8.html"},
+    {slug: "nang-tho-7.html"}
+  ]
+}
+
 const DetailTrackPage = async (props: any) => {
   const id = getIdFromSlug(props.params.slug);
 
@@ -46,7 +53,6 @@ const DetailTrackPage = async (props: any) => {
   const res = await sendRequest<IBackendRes<ITrackProps>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    nextOption: {caches: 'no-store'},
   });
 
   const resComment = await sendRequest<IBackendRes<ITrackCommentProps[]>>({

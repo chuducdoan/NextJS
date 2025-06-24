@@ -13,3 +13,12 @@ link tài liệu: https://docs.google.com/document/d/1f6M42s-v0W9x_iTecjJ6sTKmlk
 
 3. Tối ưu image
 - Khi load image từ server trả về qua api mà ta sử dụng image của next thì ta phải cấu hình trong file next.config.js
+
+    nextOption: {
+        cache: 'no-store'
+    }
+=> cách làm này để thông báp vs nextjs là ko lưu cache
+=> cách làm t2 là check theo thời gian 
+    next: {revalidate: 10}
+    + nhược điểm của cách này: cứ sau 1 khoảng thời gian nó sẽ build lại data ko quan tâm data có thay đổi hay không
+=> cách làm t3: 
