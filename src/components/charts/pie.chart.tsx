@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -11,6 +12,7 @@ import {
   PieChart,
   ReferenceLine,
   ResponsiveContainer,
+  Sector,
   Tooltip,
   TooltipProps,
   XAxis,
@@ -86,13 +88,82 @@ const CustomTooltip = ({
   return null;
 };
 
+const renderActiveShape = (props: any) => {
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+  } = props;
+
+  const RADIAN = Math.PI / 180;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? "start" : "end";
+
+  return (
+    <g>
+      {/* Hiện tên phần trong biểu đồ */}
+      {/* <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+        {payload.name}
+      </text> */}
+
+      {/* Vẽ phần được hover (phóng to) */}
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 6} // phóng to
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+
+      {/* Đường chỉ + chấm tròn + phần trăm */}
+      {/* <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" /> */}
+      {/* <text
+        x={ex + (cos >= 0 ? 12 : -12)}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text> */}
+    </g>
+  );
+};
+
 const AppPieChart = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
   return (
     <div>
       <div style={{ width: "50%", height: 300 }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart width={400} height={400}>
             <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
               data={data}
               cx="50%"
               cy="50%"
@@ -101,6 +172,7 @@ const AppPieChart = () => {
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
+              onMouseEnter={onPieEnter}
             >
               {data.map((entry, index) => (
                 <Cell
